@@ -1,43 +1,51 @@
-# Termux Minecraft Server Manager
+# Minecraft Server Manager (`mcctl.sh`)
 
-Script ini adalah menu manager untuk menjalankan dan mengelola Minecraft Java Server di Termux Android, khususnya untuk device seperti Oppo A3s. Script ini mendukung pengelolaan versi server, RAM, dashboard monitoring, Playit.gg tunnel, world manager, mod optimisasi, dan crossplay Java + Bedrock.
+`mcctl.sh` adalah script menu interaktif untuk membuat, menjalankan, dan mengelola Minecraft Java Server secara lokal. Script ini mendukung penggantian versi server, pengaturan RAM, dashboard monitoring, Playit.gg tunnel, world manager, mod optimisasi, crossplay Java + Bedrock, dan kontrol admin melalui dashboard.
 
-## Fitur Utama
+Script ini dapat digunakan di:
 
-* Install dependency Termux dan Java terbaru.
-* Install dan ganti server type:
-
-  * Vanilla
-  * Paper
-  * Fabric
-  * Forge
-* Set RAM server.
-* Optimasi `server.properties`.
-* Jalankan server Minecraft.
-* Jalankan dashboard monitoring otomatis.
-* Menampilkan IP dan port server.
-* Install mod optimisasi.
-* Fix error Playit / Lost connection.
-* Menu Playit.gg.
-* Playit first setup / claim account.
-* Reset akun Playit.
-* World manager:
-
-  * Create new world
-  * Choose existing world
-  * List world
-  * Backup current world
-* Crossplay Java + Bedrock:
-
-  * GeyserMC
-  * Floodgate
-* Log viewer untuk error/disconnect.
+```text
+- Termux Android
+- Linux laptop
+- Linux desktop
+- Linux mini PC
+- Linux server/VPS
+```
 
 ---
 
-# Struktur Folder
+## Fitur Utama
 
-Script ini menggunakan folder utama:
+```text
+- Install dependency dan Java terbaru
+- Pilih server type:
+  - Vanilla
+  - Paper
+  - Fabric
+  - Forge
+- Set RAM server
+- Optimasi server.properties
+- Jalankan server Minecraft
+- Dashboard monitoring berbasis web
+- Tampilkan IP dan port server
+- Playit.gg tunnel manager
+- First setup / claim akun Playit
+- Reset akun Playit
+- Install mod optimisasi
+- World manager
+- Crossplay Java + Bedrock
+- Dashboard admin / player monitor
+- Player online list
+- Player history
+- Remote command via dashboard admin
+- Log viewer untuk error/disconnect
+```
+
+---
+
+## Struktur Folder
+
+Default folder server:
 
 ```bash
 ~/mc-server
@@ -53,7 +61,9 @@ Struktur umum:
 ├── server.properties
 ├── eula.txt
 ├── mods/
+├── mods-disabled/
 ├── plugins/
+├── plugins-disabled/
 ├── playit/
 │   ├── playit
 │   ├── config/
@@ -69,70 +79,71 @@ Struktur umum:
 
 ---
 
-# Persiapan Awal
+# 1. Instalasi Awal
 
-## 1. Buka Termux
+## Termux Android
 
-Pastikan Termux sudah berasal dari F-Droid, bukan versi lama dari Play Store.
+Pastikan Termux berasal dari F-Droid, bukan versi lama dari Play Store.
 
-## 2. Buat folder server
+Buat folder server:
 
 ```bash
 mkdir -p ~/mc-server
 cd ~/mc-server
 ```
 
-## 3. Simpan script
-
-Letakkan file `mcctl.sh` di dalam folder:
-
-```bash
-~/mc-server/mcctl.sh
-```
-
-Lalu beri permission:
+Letakkan `mcctl.sh` di folder tersebut, lalu jalankan:
 
 ```bash
 chmod +x mcctl.sh
+./mcctl.sh
 ```
 
-## 4. Jalankan script
+## Linux Desktop / Server
+
+Buat folder server:
 
 ```bash
+mkdir -p ~/mc-server
 cd ~/mc-server
+```
+
+Letakkan `mcctl.sh` di folder tersebut, lalu jalankan:
+
+```bash
+chmod +x mcctl.sh
 ./mcctl.sh
 ```
 
 ---
 
-# Menu Utama
+# 2. Menu Utama
 
-Tampilan menu utama kurang lebih:
+Menu utama script:
 
 ```text
-TERMUX MINECRAFT SERVER MANAGER
-
 1. Install dependency + Java terbaru
 2. Ganti versi / server type
 3. Set RAM
 4. List / install mod optimasi
 5. Optimasi server.properties RAM rendah
-6. Jalankan server
+6. Jalankan server + dashboard
 7. Status + IP + port
-8. Fix Playit / Lost connection: Disconnected
+8. Fix Playit / Lost connection
 9. Lihat log error/disconnect
 10. Playit.gg menu
 11. Setup dashboard
 12. World manager
 13. Crossplay Java + Bedrock
+14. Dashboard admin / player monitor
 0. Keluar
 ```
 
 ---
 
-# Tahapan Penggunaan Awal
+# 3. Tahapan Setup dari Nol
 
-## Tahap 1 — Install Dependency
+## Langkah 1 — Install Dependency
 
 Pilih:
 
@@ -140,7 +151,7 @@ Pilih:
 1. Install dependency + Java terbaru
 ```
 
-Fungsi ini akan menginstall:
+Fungsi ini akan menginstall dependency utama, seperti:
 
 ```text
 curl
@@ -152,14 +163,17 @@ tar
 iproute2
 python
 tmux
-proot-distro
 file
-OpenJDK terbaru
-Debian proot
-Playit v0.15.0 di Debian proot
+Java / OpenJDK
 ```
 
-Script juga akan membersihkan binary Java lama yang bisa menyebabkan konflik, misalnya kasus Java 8 lama masih aktif.
+Pada Termux, script juga dapat menyiapkan:
+
+```text
+proot-distro
+Debian proot
+Playit v0.15.0 untuk Debian proot
+```
 
 Cek Java:
 
@@ -167,11 +181,17 @@ Cek Java:
 java -version
 ```
 
-Untuk Minecraft 1.21.x, Java yang disarankan adalah Java 21.
+Patokan versi Java:
+
+```text
+Minecraft 1.17 - 1.20.4  → Java 17+
+Minecraft 1.20.5+        → Java 21+
+Minecraft 1.21.x         → Java 21+
+```
 
 ---
 
-## Tahap 2 — Pilih Server Type dan Versi Minecraft
+## Langkah 2 — Pilih Server Type
 
 Pilih:
 
@@ -179,7 +199,7 @@ Pilih:
 2. Ganti versi / server type
 ```
 
-Lalu pilih salah satu:
+Pilihan server:
 
 ```text
 1. Vanilla
@@ -188,23 +208,18 @@ Lalu pilih salah satu:
 4. Forge
 ```
 
-Rekomendasi untuk Oppo A3s:
+Rekomendasi:
 
 ```text
-Paper 1.20.4 / 1.21.1
+Paper  → paling mudah dan stabil untuk server umum
+Fabric → cocok untuk mod optimisasi ringan
+Forge  → cocok untuk modpack, tetapi lebih berat
+Vanilla → paling original, tetapi minim fitur optimisasi
 ```
-
-atau kalau ingin mod optimisasi:
-
-```text
-Fabric 1.20.4 / 1.21.1
-```
-
-Untuk server ringan dan stabil, Paper paling direkomendasikan.
 
 ---
 
-## Tahap 3 — Set RAM
+## Langkah 3 — Set RAM
 
 Pilih:
 
@@ -212,32 +227,34 @@ Pilih:
 3. Set RAM
 ```
 
-Rekomendasi untuk Oppo A3s RAM 3 GB:
+Contoh input:
 
 ```text
 RAM minimum: 512M
 RAM maksimum: 1200M
 ```
 
-Jika stabil, bisa mencoba:
+atau untuk laptop/server dengan RAM lebih besar:
 
 ```text
-RAM minimum: 512M
-RAM maksimum: 1500M
+RAM minimum: 2G
+RAM maksimum: 4G
 ```
 
-Jangan memakai:
+Rekomendasi umum:
 
 ```text
--Xmx2G
--Xmx3G
+RAM device 3 GB  → Xmx 1G - 1.5G
+RAM device 8 GB  → Xmx 3G - 4G
+RAM device 12 GB → Xmx 4G - 6G
+RAM device 16 GB → Xmx 6G - 8G
 ```
 
-karena Android dan Termux juga membutuhkan RAM. Jika RAM terlalu penuh, Android bisa membunuh proses Termux.
+Jangan alokasikan semua RAM ke Minecraft. Sistem operasi, dashboard, tunnel, dan service lain tetap membutuhkan RAM.
 
 ---
 
-## Tahap 4 — Optimasi server.properties
+## Langkah 4 — Optimasi Server Properties
 
 Pilih:
 
@@ -245,73 +262,70 @@ Pilih:
 5. Optimasi server.properties RAM rendah
 ```
 
-Setting yang diterapkan biasanya:
-
-```properties
-view-distance=3 atau 4
-simulation-distance=3 atau 4
-max-players=3 sampai 5
-sync-chunk-writes=false
-network-compression-threshold=512
-spawn-protection=0
-```
-
-Rekomendasi untuk Oppo A3s:
+Setting yang biasanya diatur:
 
 ```properties
 view-distance=3
 simulation-distance=3
 max-players=3
+sync-chunk-writes=false
+network-compression-threshold=512
+spawn-protection=0
+```
+
+Untuk laptop/server yang lebih kuat, nilai bisa dinaikkan:
+
+```properties
+view-distance=6
+simulation-distance=6
+max-players=10
 ```
 
 ---
 
-## Tahap 5 — Jalankan Server
+## Langkah 5 — Jalankan Server
 
 Pilih:
 
 ```text
-6. Jalankan server
+6. Jalankan server + dashboard
 ```
 
-Saat opsi ini dipilih, script akan:
+Opsi ini akan:
 
 ```text
-1. Mengecek Java.
-2. Menjalankan dashboard otomatis.
-3. Menampilkan IP dan port.
-4. Menjalankan start.sh.
+- mengecek Java aktif
+- menjalankan dashboard jika belum aktif
+- menampilkan IP dan port server
+- menjalankan Minecraft server
 ```
 
 Contoh output:
 
 ```text
-SERVER ADDRESS
-Local device : 127.0.0.1:25565
-LAN / WiFi   : 10.211.57.47:25565
-
 DASHBOARD
-Local        : http://127.0.0.1:8080
-PC Browser   : http://10.211.57.47:8080
+Local      : http://127.0.0.1:8080
+PC Browser : http://192.168.1.25:8080
+MC Join    : 192.168.1.25:25565
 ```
 
-Untuk join dari device satu WiFi:
+Untuk join dari perangkat lain dalam satu jaringan:
 
 ```text
-10.211.57.47:25565
+192.168.1.25:25565
 ```
 
-Untuk membuka dashboard dari PC/laptop:
+Untuk membuka dashboard:
 
 ```text
-http://10.211.57.47:8080
+http://192.168.1.25:8080
 ```
 
 ---
 
-# Dashboard Monitoring
+# 4. Dashboard Monitoring
 
-Dashboard dibuat dari file:
+Dashboard dibuat dari:
 
 ```text
 mc-dashboard.py
@@ -321,19 +335,20 @@ dashboard.sh
 Dashboard menampilkan:
 
 ```text
-- Status server online/offline
-- Player count
-- Versi server
+- status server online/offline
+- jumlah player online
+- versi server
 - CPU Java
 - RAM Java
 - CPU system
 - RAM system
-- Disk usage
-- Uptime server
-- IP Minecraft
-- URL dashboard
-- Log terakhir
-- Playit status/settings
+- disk usage
+- uptime server
+- alamat Minecraft
+- alamat dashboard
+- log terakhir
+- player history
+- admin panel jika diaktifkan
 ```
 
 Menjalankan dashboard manual:
@@ -349,40 +364,31 @@ Jika port `8080` bentrok:
 MC_DASH_PORT=8081 ./dashboard.sh
 ```
 
-Lalu buka:
+---
+
+# 5. Playit.gg
+
+Playit.gg digunakan agar server dapat diakses dari internet tanpa port forwarding router.
+
+Pilih:
 
 ```text
-http://IP-HP:8081
+10. Playit.gg menu
+```
+
+Menu Playit:
+
+```text
+1. Playit first setup / claim account
+2. Install / Update Playit binary
+3. Start Playit
+4. Stop Playit
+5. Reset Playit account
+6. Show Playit status
+7. Show Playit log
 ```
 
 ---
-
-# Playit.gg
-
-Playit.gg digunakan agar server bisa diakses dari internet tanpa port forwarding router.
-
-Karena Playit versi terbaru bermasalah di Termux native, script ini memakai:
-
-```text
-Playit v0.15.0 via Debian proot
-```
-
-File Playit disimpan di:
-
-```text
-~/mc-server/playit/
-```
-
-## Struktur Playit
-
-```text
-~/mc-server/playit/
-├── playit
-├── config/
-│   └── playit.toml
-├── playit.log
-└── playit.pid
-```
 
 ## First Setup / Claim Account
 
@@ -393,13 +399,15 @@ Pilih:
 1. Playit first setup / claim account
 ```
 
-Jika muncul claim link, buka link tersebut di browser lalu login ke akun Playit.
+Jika muncul claim link, buka link tersebut di browser dan login ke akun Playit.
 
 Setelah claim selesai, tekan:
 
 ```text
 CTRL + C
 ```
+
+---
 
 ## Start Playit
 
@@ -410,42 +418,33 @@ Pilih:
 3. Start Playit
 ```
 
-Jika file config sudah ada, Playit tidak perlu claim ulang.
+Jika sudah pernah claim, Playit tidak perlu claim ulang.
 
-## Apakah setiap start harus claim?
-
-Tidak. Claim hanya perlu sekali.
-
-Config akun disimpan di:
+Config akun Playit tersimpan di:
 
 ```text
 ~/mc-server/playit/config/playit.toml
 ```
 
-Claim ulang hanya diperlukan jika:
-
-```text
-- config/playit.toml dihapus
-- memilih Reset Playit account
-- ingin ganti akun Playit
-- config Playit rusak/hilang
-```
+---
 
 ## Reset Akun Playit
 
-Pilih:
+Jika ingin ganti akun Playit:
 
 ```text
 10. Playit.gg menu
 5. Reset Playit account
 ```
 
-Setelah itu lakukan first setup lagi:
+Lalu claim ulang:
 
 ```text
 10. Playit.gg menu
 1. Playit first setup / claim account
 ```
+
+---
 
 ## Setting Tunnel Playit untuk Java
 
@@ -458,64 +457,16 @@ Local address: 127.0.0.1
 Local port: 25565
 ```
 
-Jika tidak tembus dari Debian proot, gunakan IP HP yang muncul di dashboard, contoh:
+Jika `127.0.0.1` tidak tembus dari environment tunnel, gunakan IP lokal server yang muncul di dashboard, contoh:
 
 ```text
-Local address: 10.211.57.47
+Local address: 192.168.1.25
 Local port: 25565
 ```
 
 ---
 
-# Fix Lost Connection / Disconnected
-
-Jika saat join muncul:
-
-```text
-Lost connection: Disconnected
-```
-
-Pilih:
-
-```text
-8. Fix Playit / Lost connection: Disconnected
-```
-
-Menu ini akan mengatur:
-
-```properties
-server-port=25565
-white-list=false
-enforce-whitelist=false
-enforce-secure-profile=false
-prevent-proxy-connections=false
-```
-
-Lalu kamu akan diminta memilih mode akun:
-
-```text
-1. Akun resmi Microsoft / premium
-2. Non-premium / offline launcher
-3. Jangan ubah online-mode
-```
-
-Jika player memakai akun resmi:
-
-```properties
-online-mode=true
-```
-
-Jika player memakai offline launcher:
-
-```properties
-online-mode=false
-```
-
-Setelah itu restart server.
-
----
-
-# Mod Optimisasi
+# 6. Mod Optimisasi
 
 Pilih:
 
@@ -523,7 +474,7 @@ Pilih:
 4. List / install mod optimasi
 ```
 
-Untuk Oppo A3s, rekomendasi Fabric:
+Rekomendasi Fabric:
 
 ```text
 Lithium
@@ -533,25 +484,21 @@ ServerCore
 ModernFix
 ```
 
-Fungsi utama:
+Fungsi umum:
 
 ```text
-Lithium     : optimasi logic server
-FerriteCore : mengurangi RAM
-Krypton     : optimasi network
-ServerCore  : optimasi server dan lag spike
-ModernFix   : optimasi memory/performance tambahan
+Lithium     → optimasi logic server
+FerriteCore → mengurangi penggunaan RAM
+Krypton     → optimasi networking
+ServerCore  → optimasi server dan lag spike
+ModernFix   → optimasi memory/performance tambahan
 ```
 
-Untuk server paling ringan dan stabil, Paper tanpa mod juga sangat direkomendasikan.
-
-## Disable Semua Mod
-
-Jika server disconnect atau client tidak cocok:
+Jika server error karena mod tidak cocok:
 
 ```text
 4. List / install mod optimasi
-5. Disable semua mod aktif
+Disable semua mod aktif
 ```
 
 Mod akan dipindahkan ke:
@@ -562,7 +509,7 @@ mods-disabled/
 
 ---
 
-# World Manager
+# 7. World Manager
 
 Pilih:
 
@@ -581,35 +528,31 @@ Menu:
 0. Kembali
 ```
 
+---
+
 ## Show Current World
 
-Menampilkan world aktif berdasarkan:
-
-```properties
-level-name=
-```
-
-Contoh:
+Menampilkan world aktif dari `server.properties`:
 
 ```properties
 level-name=world
 ```
 
+---
+
 ## List Worlds
 
-Mencari folder world di `~/mc-server`, misalnya:
+Menampilkan daftar folder world yang terdeteksi di folder server.
 
-```text
-world
-survival-1
-creative-test
-```
-
-World aktif akan ditandai:
+Contoh:
 
 ```text
 * world [ACTIVE]
+- survival-1
+- creative-test
 ```
+
+---
 
 ## Create New World
 
@@ -619,14 +562,14 @@ Pilih:
 3. Create new world
 ```
 
-Isi:
+Input yang diminta:
 
 ```text
-Nama world
-Gamemode
-Difficulty
-Seed
-Backup current world atau tidak
+nama world
+gamemode
+difficulty
+seed
+backup current world atau tidak
 ```
 
 Script akan mengubah:
@@ -638,7 +581,9 @@ gamemode=survival
 difficulty=normal
 ```
 
-Folder world akan dibuat otomatis saat server dijalankan.
+Folder world baru akan dibuat saat server dijalankan.
+
+---
 
 ## Choose Existing World
 
@@ -658,6 +603,8 @@ level-name=nama-world
 
 Setelah mengganti world, restart server.
 
+---
+
 ## Backup Current World
 
 Pilih:
@@ -674,7 +621,7 @@ Backup disimpan di:
 
 ---
 
-# Crossplay Java + Bedrock
+# 8. Crossplay Java + Bedrock
 
 Pilih:
 
@@ -685,15 +632,15 @@ Pilih:
 Menu:
 
 ```text
-1. Install Geyser + Floodgate
-2. Configure Geyser
-3. Show crossplay join info
+1. Install Geyser + Floodgate untuk Paper/Spigot
+2. Install Geyser + Floodgate untuk Fabric
+3. Configure Geyser
+4. Show crossplay join info
+5. Show crossplay logs
 0. Kembali
 ```
 
-## Fungsi Crossplay
-
-Crossplay memungkinkan pemain:
+Crossplay memungkinkan:
 
 ```text
 Minecraft Java Edition
@@ -705,66 +652,112 @@ masuk ke server yang sama.
 Komponen:
 
 ```text
-GeyserMC   : bridge Bedrock ke Java
-Floodgate  : login Bedrock tanpa akun Java
+GeyserMC  → bridge Bedrock ke Java
+Floodgate → login Bedrock tanpa akun Java
 ```
 
-## Rekomendasi
+---
 
-Untuk Oppo A3s, gunakan:
+## Crossplay untuk Paper
 
-```text
-Paper + Geyser-Spigot + Floodgate-Spigot
-```
-
-Fabric bisa, tetapi Paper lebih sederhana dan ringan untuk HP lama.
-
-## Tahapan Install Crossplay
-
-1. Pastikan server type adalah Paper.
-2. Pilih:
+Gunakan menu:
 
 ```text
 13. Crossplay Java + Bedrock
-1. Install Geyser + Floodgate
+1. Install Geyser + Floodgate untuk Paper/Spigot
 ```
 
-3. Jalankan server sekali:
+File dipasang ke:
 
 ```text
-6. Jalankan server
+plugins/
 ```
 
-4. Setelah config Geyser dibuat, stop server:
+Tahapan:
 
 ```text
-stop
+1. Install Geyser + Floodgate untuk Paper/Spigot
+2. Jalankan server sampai Done
+3. Stop server
+4. Configure Geyser
+5. Jalankan server lagi
 ```
 
-5. Pilih:
+---
+
+## Crossplay untuk Fabric
+
+Gunakan menu:
 
 ```text
 13. Crossplay Java + Bedrock
-2. Configure Geyser
+2. Install Geyser + Floodgate untuk Fabric
 ```
 
-6. Jalankan server lagi:
+File dipasang ke:
 
 ```text
-6. Jalankan server
+mods/
 ```
+
+Catatan penting:
+
+```text
+Geyser-Spigot.jar tidak dipakai di Fabric
+floodgate-spigot.jar tidak dipakai di Fabric
+Fabric memakai Geyser-Fabric + Floodgate-Fabric
+```
+
+Tahapan:
+
+```text
+1. Install Geyser + Floodgate untuk Fabric
+2. Jalankan server sampai Done
+3. Stop server
+4. Configure Geyser
+5. Jalankan server lagi
+```
+
+---
+
+## Configure Geyser
+
+Pilih:
+
+```text
+13. Crossplay Java + Bedrock
+3. Configure Geyser
+```
+
+Konfigurasi yang diterapkan:
+
+```yaml
+bedrock:
+  address: 0.0.0.0
+  port: 19132
+  clone-remote-port: false
+
+remote:
+  address: 127.0.0.1
+  port: 25565
+  auth-type: floodgate
+```
+
+---
 
 ## Join dari Java
 
 ```text
-IP-A3S:25565
+IP-SERVER:25565
 ```
 
 Contoh:
 
 ```text
-10.211.57.47:25565
+192.168.1.25:25565
 ```
+
+---
 
 ## Join dari Bedrock
 
@@ -777,14 +770,23 @@ Servers → Add Server
 Isi:
 
 ```text
-Server Name: A3S Server
-Server Address: 10.211.57.47
+Server Name: My Server
+Server Address: IP-SERVER
 Port: 19132
 ```
 
+Contoh:
+
+```text
+Address: 192.168.1.25
+Port: 19132
+```
+
+---
+
 ## Playit untuk Crossplay
 
-Jika memakai Playit, perlu dua tunnel:
+Jika memakai Playit, buat dua tunnel:
 
 ```text
 Java:
@@ -800,15 +802,151 @@ Local address: 127.0.0.1
 Local port: 19132
 ```
 
-Jika `127.0.0.1` tidak tembus dari Debian proot, gunakan IP HP:
+---
+
+# 9. Dashboard Admin / Player Monitor
+
+Pilih:
 
 ```text
-10.211.57.47
+14. Dashboard admin / player monitor
+```
+
+Menu:
+
+```text
+1. Setup dashboard admin + enable RCON
+2. Show admin token
+3. Reset admin token
+0. Kembali
+```
+
+Fitur ini mengaktifkan RCON agar dashboard bisa mengirim command admin.
+
+---
+
+## Setup Dashboard Admin
+
+Pilih:
+
+```text
+14. Dashboard admin / player monitor
+1. Setup dashboard admin + enable RCON
+```
+
+Script akan mengatur:
+
+```properties
+enable-rcon=true
+rcon.port=25575
+rcon.password=<random password>
+broadcast-rcon-to-ops=false
+```
+
+Script juga membuat token dashboard:
+
+```text
+~/mc-server/.dashboard/admin.token
+```
+
+Token ini dipakai di dashboard browser.
+
+Setelah setup, restart server.
+
+---
+
+## Fitur Admin Dashboard
+
+Di dashboard, admin dapat:
+
+```text
+- melihat player online
+- melihat history join/leave/disconnect
+- mengirim command server
+- OP player
+- DEOP player
+- kick player
+- whitelist add
+- whitelist remove
+- say message
+```
+
+Contoh command manual:
+
+```text
+say halo dari dashboard
+time set day
+weather clear
+gamemode creative Steve
+tp Steve 0 80 0
 ```
 
 ---
 
-# Log Viewer
+## Keamanan Admin Dashboard
+
+Jangan expose dashboard admin langsung ke internet publik tanpa proteksi tambahan.
+
+Rekomendasi:
+
+```text
+- gunakan hanya di LAN
+- gunakan VPN/Tailscale/ZeroTier
+- jangan share admin token
+- reset token jika pernah tersebar
+```
+
+---
+
+# 10. Fix Lost Connection / Disconnected
+
+Jika player gagal join dengan pesan:
+
+```text
+Lost connection: Disconnected
+```
+
+Pilih:
+
+```text
+8. Fix Playit / Lost connection
+```
+
+Script akan mengatur:
+
+```properties
+server-port=25565
+white-list=false
+enforce-whitelist=false
+enforce-secure-profile=false
+prevent-proxy-connections=false
+```
+
+Lalu pilih mode akun:
+
+```text
+1. Akun resmi Microsoft / premium
+2. Non-premium / offline launcher
+3. Jangan ubah online-mode
+```
+
+Jika player memakai akun resmi:
+
+```properties
+online-mode=true
+```
+
+Jika player memakai offline launcher:
+
+```properties
+online-mode=false
+```
+
+Restart server setelah melakukan perubahan.
+
+---
+
+# 11. Log Viewer
 
 Pilih:
 
@@ -835,13 +973,18 @@ error
 warn
 ```
 
-Jika ada masalah join, jalankan menu ini lalu cek penyebabnya.
+Untuk crossplay, pilih:
+
+```text
+13. Crossplay Java + Bedrock
+5. Show crossplay logs
+```
 
 ---
 
-# Cara Menjalankan Server 24 Jam
+# 12. Menjalankan Server 24 Jam
 
-Agar server tetap berjalan, gunakan `tmux`.
+Gunakan `tmux` agar server tetap berjalan meskipun terminal ditutup.
 
 Install:
 
@@ -849,7 +992,13 @@ Install:
 pkg install tmux -y
 ```
 
-## Session Minecraft
+atau di Linux:
+
+```bash
+sudo apt install tmux -y
+```
+
+Jalankan server:
 
 ```bash
 tmux new -s mc
@@ -860,7 +1009,7 @@ cd ~/mc-server
 Pilih:
 
 ```text
-6. Jalankan server
+6. Jalankan server + dashboard
 ```
 
 Detach tanpa mematikan server:
@@ -875,81 +1024,79 @@ Masuk lagi:
 tmux attach -t mc
 ```
 
-## Session Dashboard
-
-Jika dashboard belum otomatis berjalan:
+Cek session:
 
 ```bash
-tmux new -s dash
-cd ~/mc-server
-./dashboard.sh
-```
-
-Detach:
-
-```text
-CTRL + B lalu D
-```
-
-## Session Playit
-
-Jika ingin menjalankan Playit manual:
-
-```bash
-tmux new -s playit
-cd ~/mc-server
-./mcctl.sh
-```
-
-Pilih:
-
-```text
-10. Playit.gg menu
-3. Start Playit
+tmux ls
 ```
 
 ---
 
-# Rekomendasi Setting untuk Oppo A3s
+# 13. Rekomendasi Konfigurasi
 
-## Server Ringan
+## Device RAM 3 GB
 
 ```text
-Server type: Paper
-Minecraft: 1.20.4 / 1.21.1
+Server type: Paper atau Fabric
 RAM: 512M - 1200M
 view-distance=3
 simulation-distance=3
-max-players=3
+max-players=2-3
 ```
 
-## Server Fabric Optimized
+## Device RAM 8 GB
 
 ```text
-Server type: Fabric
-RAM: 512M - 1200M
-Mods:
-- Lithium
-- FerriteCore
-- Krypton
-- ServerCore
-- ModernFix
+RAM: 2G - 4G
+view-distance=5
+simulation-distance=5
+max-players=5-10
 ```
 
-## Crossplay
+## Device RAM 12 GB
 
 ```text
-Server type: Paper
-Plugins:
-- Geyser-Spigot
-- Floodgate-Spigot
-Java port: 25565 TCP
-Bedrock port: 19132 UDP
+RAM: 3G - 6G
+view-distance=6
+simulation-distance=6
+max-players=10+
+```
+
+## Server paling ringan
+
+```text
+Paper
+RAM rendah
+view-distance rendah
+tanpa mod berlebihan
+```
+
+## Server Fabric optimisasi
+
+```text
+Fabric
+Lithium
+FerriteCore
+Krypton
+ServerCore
+ModernFix
+```
+
+## Server Crossplay
+
+```text
+Paper + Geyser + Floodgate
+```
+
+atau:
+
+```text
+Fabric + Geyser-Fabric + Floodgate-Fabric
 ```
 
 ---
 
-# Masalah Umum
+# 14. Masalah Umum
 
 ## Java salah versi
 
@@ -959,139 +1106,141 @@ Cek:
 java -version
 ```
 
-Minecraft 1.21.x butuh Java 21.
+Jika Minecraft 1.21.x gagal, pastikan Java 21 aktif.
 
-Jika Java lama masih aktif, jalankan:
+---
 
-```text
-1. Install dependency + Java terbaru
-```
+## Mod incompatible
 
-## Server lag saat awal join
+Cek log:
 
-Penyebab umum:
-
-```text
-- chunk loading
-- chunk generation
-- Java warmup
-- storage HP lambat
-- Playit tunnel handshake
+```bash
+grep -iE "incompatible|requires|mod resolution failed|error" logs/latest.log | tail -n 100
 ```
 
 Solusi:
 
-```properties
-view-distance=3
-simulation-distance=3
-max-players=3
+```text
+- disable mod yang salah
+- install ulang mod sesuai versi Minecraft
+- jangan ambil latest global jika tidak cocok dengan MC_VERSION
 ```
 
-## Bedrock tidak bisa join
+---
+
+## Geyser config tidak muncul
+
+Kemungkinan:
+
+```text
+- server belum dijalankan sampai Done
+- Geyser gagal load
+- memakai file Spigot di Fabric
+- memakai file Fabric di Paper
+- versi Geyser tidak cocok dengan Minecraft
+```
 
 Cek:
 
-```text
-- Geyser sudah aktif?
-- Floodgate sudah aktif?
-- Port Bedrock 19132 benar?
-- Playit tunnel Bedrock memakai UDP?
-- Config Geyser auth-type=floodgate?
+```bash
+find mods plugins config -iname "*geyser*" -o -iname "*floodgate*" -o -iname "config.yml"
 ```
 
-## Java bisa join, Bedrock tidak
-
-Kemungkinan Playit hanya membuat tunnel TCP 25565. Bedrock butuh:
-
-```text
-UDP 19132
-```
-
-## Playit minta claim terus
-
-Cek file:
+Cek log:
 
 ```bash
-ls -l ~/mc-server/playit/config/playit.toml
+grep -iE "geyser|floodgate|error|exception|failed" logs/latest.log | tail -n 150
 ```
 
-Jika file tidak ada, lakukan first setup ulang.
+---
 
 ## Dashboard tidak bisa dibuka dari PC
 
 Pastikan:
 
 ```text
-- PC dan HP satu WiFi/hotspot
-- dashboard jalan di 0.0.0.0
-- buka http://IP-HP:8080
-- jangan buka 127.0.0.1 dari PC
+- PC dan server satu jaringan
+- dashboard berjalan di 0.0.0.0
+- buka IP server, bukan 127.0.0.1
+```
+
+Contoh benar:
+
+```text
+http://192.168.1.25:8080
+```
+
+Contoh salah dari PC lain:
+
+```text
+http://127.0.0.1:8080
 ```
 
 ---
 
-# Urutan Setup yang Disarankan dari Nol
+## Playit meminta claim ulang
+
+Cek:
+
+```bash
+ls -l ~/mc-server/playit/config/playit.toml
+```
+
+Jika file hilang, lakukan first setup ulang.
+
+---
+
+# 15. Ringkasan Setup Cepat
+
+Urutan setup dari nol:
 
 ```text
-1. Jalankan mcctl.sh
+1. Jalankan ./mcctl.sh
 2. Pilih 1. Install dependency + Java terbaru
 3. Pilih 2. Ganti versi / server type
-4. Pilih Paper
-5. Masukkan versi Minecraft
-6. Pilih 3. Set RAM
-7. Isi 512M dan 1200M
-8. Pilih 5. Optimasi server.properties
-9. Pilih 6. Jalankan server
-10. Buka dashboard dari PC: http://IP-HP:8080
-11. Jika ingin internet publik, buka 10. Playit.gg menu
-12. Pilih Playit first setup / claim account
-13. Pilih Start Playit
-14. Buat tunnel Minecraft Java TCP 25565 di Playit
-15. Jika ingin Bedrock, pilih 13. Crossplay Java + Bedrock
-16. Install Geyser + Floodgate
-17. Configure Geyser
-18. Buat tunnel Bedrock UDP 19132 di Playit
+4. Pilih Paper atau Fabric
+5. Set RAM
+6. Optimasi server.properties
+7. Jalankan server + dashboard
+8. Buka dashboard dari browser
+9. Jika butuh internet publik, setup Playit
+10. Jika butuh Bedrock, setup Crossplay
+11. Jika butuh admin dashboard, aktifkan RCON dari menu 14
 ```
 
 ---
 
-# Catatan Keamanan
+# 16. Catatan Keamanan
 
-* Jangan membagikan akses Termux/SSH sembarangan.
-* Jangan membuka dashboard ke internet tanpa proteksi.
-* Untuk dashboard publik, sebaiknya gunakan VPN atau tunnel dengan autentikasi.
-* Backup world secara berkala.
-* Jangan menjalankan server dengan RAM terlalu besar di HP.
-* Pastikan HP tidak terlalu panas.
-* Gunakan charger yang stabil.
-* Jangan taruh HP di tempat tertutup/panas saat server 24 jam.
+```text
+- Jangan share admin token dashboard
+- Jangan expose dashboard admin ke internet publik tanpa proteksi
+- Backup world secara rutin
+- Jangan alokasikan semua RAM ke server
+- Pantau suhu device
+- Gunakan charger/adaptor yang stabil untuk perangkat 24 jam
+- Gunakan tmux untuk menjaga service tetap aktif
+```
 
 ---
 
-# Ringkasan
+# 17. Ringkasan
 
-Script ini mengubah Oppo A3s menjadi mini Minecraft server dengan fitur:
-
-```text
-Minecraft Java Server
-Dashboard monitoring
-Playit.gg tunnel
-World manager
-Crossplay Bedrock
-Mod optimization
-Backup world
-Log viewer
-```
-
-Setup paling stabil untuk Oppo A3s:
+`mcctl.sh` adalah script all-in-one untuk mengelola Minecraft Java Server dengan fitur:
 
 ```text
-Paper
-Java 21
-RAM 512M - 1200M
-view-distance=3
-simulation-distance=3
-max-players=3
-Geyser + Floodgate jika butuh Bedrock
-Playit jika butuh akses internet
+server installer
+version switcher
+RAM manager
+dashboard monitoring
+Playit tunnel
+world manager
+crossplay Java + Bedrock
+mod optimization
+admin dashboard
+player history
+RCON control
+log viewer
 ```
+
+Script ini cocok untuk perangkat ringan, laptop bekas, mini PC, server Linux, maupun Termux Android.

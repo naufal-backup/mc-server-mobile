@@ -6,10 +6,6 @@ Script ini dapat digunakan di:
 
 ```text
 - Termux Android
-- Linux laptop
-- Linux desktop
-- Linux mini PC
-- Linux server/VPS
 ```
 
 ---
